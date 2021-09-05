@@ -1,3 +1,4 @@
+import com.sun.media.sound.InvalidFormatException;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -6,8 +7,6 @@ import org.junit.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -24,16 +23,18 @@ import java.util.concurrent.TimeUnit;
 public class Junit_Test {
     WebDriver driver;
     WebDriverWait wait;
+
     @Before
     public void setup() {
-        System.setProperty("webdriver.gecko.driver", "./src/test/resources/geckodriver.exe");
-        FirefoxOptions ops = new FirefoxOptions();
+        System.setProperty("webdriver.chrome.driver", "./src/test/resources/chromedriver.exe");
+        ChromeOptions ops = new ChromeOptions();
         ops.addArguments("--headed");
-        driver = new FirefoxDriver(ops);
+        driver = new ChromeDriver(ops);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
     }
 
+    //    MultiWindows
     @Test
     public void MulWindows() {
         driver.get("https://demoqa.com/browser-windows");
@@ -54,16 +55,16 @@ public class Junit_Test {
         }
     }
 
+    //Modal Dialog
     @Test
     public void modalDialog() throws InterruptedException {
         driver.get("https://demoqa.com/modal-dialogs");
-//        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.id("showSmallModal")));
         driver.findElement(By.id("showSmallModal")).click();
-//        element.click();
         Thread.sleep(8000);
         driver.findElement(By.id("closeSmallModal")).click();
     }
 
+    //WebTable
     @Test
     public void webTables() {
         driver.get("https://demoqa.com/webtables");
@@ -77,6 +78,7 @@ public class Junit_Test {
         driver.findElement(By.id("submit")).click();
     }
 
+    //ScrapData
     @Test
     public void scrapData() {
         driver.get("https://demoqa.com/webtables");
@@ -92,6 +94,7 @@ public class Junit_Test {
         }
     }
 
+    //upload Image
     @Test
     public void uploadImage() {
         driver.get("https://demoqa.com/upload-download");
@@ -101,6 +104,7 @@ public class Junit_Test {
         Assert.assertTrue(text.contains("diu.jpg"));
     }
 
+    //handleIframe
     @Test
     public void handleIframe() {
         driver.get("https://demoqa.com/frames");
@@ -109,6 +113,8 @@ public class Junit_Test {
         Assert.assertTrue(text.contains("This is a sample page"));
         driver.switchTo().defaultContent();
     }
+
+    //MouseHover
     @Test
     public void mouseHover() throws InterruptedException {
         driver.get("https://green.edu.bd/");
@@ -118,6 +124,8 @@ public class Junit_Test {
         Thread.sleep(6000);
         driver.findElement(By.xpath("//*[@id=\"menu-item-360\"]/a")).click();
     }
+
+    //keyboardEvents
     @Test
     public void keyboardEvents() throws InterruptedException {
         driver.get("https://www.google.com/");
@@ -132,35 +140,26 @@ public class Junit_Test {
                 .perform();
         Thread.sleep(5000);
     }
+
+    //takeScreenshot
     @Test
     public void takeScreenShot() throws IOException {
         driver.get("https://demoqa.com");
-        File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         String time = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss-aa").format(new Date());
         String fileWithPath = "./src/test/resources/screenshots/" + time + ".png";
         File DestFile = new File(fileWithPath);
         FileUtils.copyFile(screenshotFile, DestFile);
     }
-//    @Test
-//    public static void readFromExcel(String filePath,String fileName,String sheetName) throws
-//            IOException {
-//        File file = new File(filePath+"\\"+fileName);
-//        FileInputStream inputStream = new FileInputStream(file);
-//        Workbook workbook = null;
-//        String fileExtensionName = fileName.substring(fileName.indexOf("."));
-//        if(fileExtensionName.equals(".xls")){
-//            workbook = new HSSFWorkbook(inputStream);
-//        }
-//        Sheet sheet = workbook.getSheet(sheetName);
-//        int rowCount = sheet.getLastRowNum()-sheet.getFirstRowNum();
-//        for (int i = 0; i < rowCount+1; i++) {
-//            Row row = sheet.getRow(i);
-//            for (int j = 0; j < row.getLastCellNum(); j++) {
-//                System.out.print((row.getCell(j).getStringCellValue()) +"|| ");
-//            }
-//            System.out.println();
-//        }
-//    }
+
+    //readExcelFile
+    @Test
+    public void readExcelFile() throws IOException, InvalidFormatException {
+        String filePath = ".\\src\\test\\resources";
+        Utils.readFromExcel(filePath, "sampleFile.xls", "Sheet1");
+    }
+
+    //Google Image check
     @Test
     public void GoogleImage() {
         driver.get("https://www.google.com/");
@@ -176,15 +175,34 @@ public class Junit_Test {
         Assert.assertTrue(title.contains("Google Search"));
 
     }
+
+    //Gmail Signup process
     @Test
-    public void GmailSign(){
+    public void GmailSign() {
         driver.get("https://www.gmail.com");
-        driver.findElement(By.id("identifierId")).sendKeys("moshiur19121997@gmail.com");
+        driver.findElement(By.id("identifierId")).sendKeys("email1@gmail.com");
         driver.findElement(By.xpath("//*[@id=\"identifierNext\"]/div/button/span")).click();
+        driver.findElement(By.name("password")).sendKeys("demo1234");
+        driver.findElement(By.xpath("//*[@id=\"passwordNext\"]/div/button/span")).click();
+        driver.findElement(By.xpath("//*[@id=\":7m\"]/div/div")).click();
+        driver.findElement(By.xpath("//*[@id=\":13k\"]")).sendKeys("Email2@gmail.com");
+        driver.findElement(By.xpath("//input[@id=':ka']")).sendKeys("send a mail");
+        driver.findElement(By.xpath("//div[@id=':lg']")).sendKeys("Hello this is a demo message");
+        driver.findElement(By.xpath("//*[@id=\":12s\"]")).click();
+        driver.get("https://www.gmail.com");
+        driver.findElement(By.id("identifierId")).sendKeys("Email2@gmail.com");
+        driver.findElement(By.xpath("//*[@id=\"identifierNext\"]/div/button/span")).click();
+        driver.findElement(By.name("password")).sendKeys("pass1234");
+        driver.findElement(By.xpath("//*[@id=\"passwordNext\"]/div/button/span")).click();
+        List<WebElement> list = driver.findElements(By.className("qj "));
+        list.get(0).click();
+        String text = list.get(0).getText();
+        Assert.assertTrue(text.contains("Hello this is a demo message"));
+
     }
 
     @After
     public void stop() {
-
+        driver.close();
     }
 }
