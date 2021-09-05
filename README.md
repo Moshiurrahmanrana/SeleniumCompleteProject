@@ -1,6 +1,6 @@
 # SeleniumCompleteProject
-1.GoogleImage
-2.MulWindows
+#1.GoogleImage
+#2.MulWindows
 3.handleIframe
 4.keyboardEvents
 5.modalDialog
